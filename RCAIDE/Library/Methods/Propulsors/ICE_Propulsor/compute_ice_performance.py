@@ -62,6 +62,7 @@ def compute_ice_performance(propulsor,state,fuel_line,center_of_gravity= [[0.0, 
     # Run the propeller to get the power
     propeller_conditions                = ice_conditions[propeller.tag]
     propeller_conditions.omega          = RPM * Units.rpm 
+    propeller_conditions.shaft_torque   = engine_conditions.torque
     propeller_conditions.throttle       = engine_conditions.throttle
     compute_rotor_performance(propulsor,state,fuel_line,center_of_gravity)
     

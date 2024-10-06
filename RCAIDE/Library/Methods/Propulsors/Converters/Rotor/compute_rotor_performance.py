@@ -18,7 +18,7 @@ import  numpy as  np
 #  Generalized Rotor Class
 # ---------------------------------------------------------------------------------------------------------------------- 
 ## @ingroup Energy-Propulsion-Converters
-def compute_rotor_performance(propulsor,state,disributor,center_of_gravity= [[0.0, 0.0,0.0]]):
+def compute_rotor_performance(propulsor,state,disributor, center_of_gravity= [[0.0, 0.0,0.0]]):
     """Analyzes a general rotor given geometry and operating conditions.
 
     Assumptions:
@@ -86,13 +86,199 @@ def compute_rotor_performance(propulsor,state,disributor,center_of_gravity= [[0.
       orientation_euler_angles           [rad, rad, rad]
     """
 
-    # Unpack rotor blade parameters and operating conditions 
-    conditions            = state.conditions 
     if 'rotor' in  propulsor:
         rotor =  propulsor.rotor
     elif 'propeller' in  propulsor:
         rotor =  propulsor.propeller
+    
+    if rotor.fidelity == "Acutator_Disc":
+        Acutator_Disc_Model(state,propulsor,rotor,disributor,center_of_gravity)
+    elif rotor.fidelity ==  "BEMT":
+        Blade_Element_Momentum_Theory(state,propulsor,rotor,disributor,center_of_gravity)
+    else:
+        Blade_Element_Momentum_Theory(state,propulsor,rotor,disributor,center_of_gravity)
+    return 
+
+def Acutator_Disc_Model(state,propulsor,rotor,disributor,center_of_gravity):
+    # Unpack rotor blade parameters and operating conditions 
+    conditions            = state.conditions  
+    propulsor_conditions  = conditions.energy[disributor.tag][propulsor.tag]
+    rotor_conditions      = propulsor_conditions[rotor.tag]
+    commanded_TV          = propulsor_conditions.commanded_thrust_vector_angle
+    eta                   = rotor_conditions.throttle 
+    omega                 = rotor_conditions.omega 
+    R                     = rotor.tip_radius  
+    rho                   = conditions.freestream.density[:,0,None] 
+    Vv                    = conditions.frames.inertial.velocity_vector 
+    ctrl_pts              = len(Vv)
+ 
+
+    # Velocity in the rotor frame
+    T_body2inertial         = conditions.frames.body.transform_to_inertial
+    T_inertial2body         = orientation_transpose(T_body2inertial)
+    V_body                  = orientation_product(T_inertial2body,Vv)
+    body2thrust,orientation = rotor.body_to_prop_vel(commanded_TV) 
+    T_body2thrust           = orientation_transpose(np.ones_like(T_body2inertial[:])*body2thrust)
+    V_thrust                = orientation_product(T_body2thrust,V_body)
+
+    # Check and correct for hover
+    V         = V_thrust[:,0,None]
+    V[V==0.0] = 1E-6
      
+    # Unpack     
+    etap   = rotor.propulsive_efficiency
+    omega  = rotor_conditions.omega
+    torque = rotor_conditions.shaft_torque 
+    
+    # Do very little calculations
+    power  = torque*omega
+    n      = omega/(2.*np.pi) 
+    D      = 2*R
+    
+    thrust = etap*power/V
+    
+    Cp     = power/(rho*(n*n*n)*(D*D*D*D*D))
+    conditions.propulsion.etap = etap
+
+    # calculate coefficients
+    D        = 2*R
+    Cq       = torque/(rho*(n*n)*(D*D*D*D*D))
+    Ct       = thrust/(rho*(n*n)*(D*D*D*D)) 
+    Cp       = power/(rho*(n*n*n)*(D*D*D*D*D)) 
+    etap     = V*thrust/power
+    A        = np.pi*(R**2 - rotor.hub_radius**2)
+    FoM      = thrust*np.sqrt(thrust/(2*rho*A))/power  
+
+    # prevent things from breaking
+    Cq[Cq<0]                   = 0.
+    Ct[Ct<0]                   = 0.
+    Cp[Cp<0]                   = 0.
+    thrust[omega<0.0]          = -thrust[omega<0.0]
+    thrust[omega==0.0]         = 0.0
+    power[omega==0.0]          = 0.0
+    torque[omega==0.0]         = 0.0 
+    Ct[omega==0.0]             = 0.0
+    Cp[omega==0.0]             = 0.0
+    etap[omega==0.0]           = 0.
+    
+    
+    thrust[eta[:,0]  <=0.0]    = 0.0
+    power[eta[:,0]  <=0.0]     = 0.0
+    torque[eta[:,0]  <=0.0]    = 0.0 
+    power[eta>1.0]             = power[eta>1.0]*eta[eta>1.0]
+    thrust[eta[:,0]>1.0,:]     = thrust[eta[:,0]>1.0,:]*eta[eta[:,0]>1.0,:]
+
+    disc_loading           = thrust/(np.pi*(R**2))
+    power_loading          = thrust/(power)    
+    
+    # Make the thrust a 3D vector
+    thrust_prop_frame      = np.zeros((ctrl_pts,3))
+    thrust_prop_frame[:,0] = thrust[:,0]
+    thrust_vector          = orientation_product(orientation_transpose(T_body2thrust),thrust_prop_frame)
+ 
+    # Compute moment 
+    moment_vector           = np.zeros((ctrl_pts,3))
+    moment_vector[:,0]      = rotor.origin[0][0]  -  center_of_gravity[0][0] 
+    moment_vector[:,1]      = rotor.origin[0][1]  -  center_of_gravity[0][1] 
+    moment_vector[:,2]      = rotor.origin[0][2]  -  center_of_gravity[0][2]
+    moment                  =  np.cross(moment_vector, thrust_vector)
+      
+     
+    outputs                                       = Data( 
+                torque                            = torque,
+                thrust                            = thrust_vector,  
+                power                             = power,
+                moment                            = moment, 
+                rpm                               = omega /Units.rpm ,   
+                tip_mach                          = omega * R / conditions.freestream.speed_of_sound, 
+                efficiency                        = etap,          
+                orientation                       = orientation,   
+                speed_of_sound                    = conditions.freestream.speed_of_sound,
+                density                           = conditions.freestream.density,
+                velocity                          = Vv, 
+                disc_loading                      = disc_loading, 
+                power_loading                     = power_loading,      
+                omega                             = omega, 
+                thrust_coefficient                = Ct, 
+                torque_coefficient                = Cq,
+                power_coefficient                 = Cp,  
+                figure_of_merit                   = FoM, 
+        ) 
+    
+
+    conditions.energy[disributor.tag][propulsor.tag][rotor.tag] = outputs     
+        
+    return
+
+def Blade_Element_Momentum_Theory(state,propulsor,rotor,disributor,center_of_gravity):
+    """Analyzes a general rotor given geometry and operating conditions.
+
+    Assumptions:
+    per source
+
+    Source:
+    Drela, M. "Qprop Formulation", MIT AeroAstro, June 2006
+    http://web.mit.edu/drela/Public/web/qprop/qprop_theory.pdf
+
+    Leishman, Gordon J. Principles of helicopter aerodynamics
+    Cambridge university press, 2006.
+
+    Inputs:
+    rotor.inputs.omega                    [radian/s]
+    conditions.freestream.
+      density                            [kg/m^3]
+      dynamic_viscosity                  [kg/(m-s)]
+      speed_of_sound                     [m/s]
+      temperature                        [K]
+    conditions.frames.
+      body.transform_to_inertial         (rotation matrix)
+      inertial.velocity_vector           [m/s]
+    conditions.energy.
+      throttle                           [-]
+
+    Outputs:
+    conditions.energy.outputs.
+       number_radial_stations            [-]
+       number_azimuthal_stations         [-]
+       disc_radial_distribution          [m]
+       speed_of_sound                    [m/s]
+       density                           [kg/m-3]
+       velocity                          [m/s]
+       disc_tangential_induced_velocity  [m/s]
+       disc_axial_induced_velocity       [m/s]
+       disc_tangential_velocity          [m/s]
+       disc_axial_velocity               [m/s]
+       drag_coefficient                  [-]
+       lift_coefficient                  [-]
+       omega                             [rad/s]
+       disc_circulation                  [-]
+       blade_dQ_dR                       [N/m]
+       blade_dT_dr                       [N]
+       blade_thrust_distribution         [N]
+       disc_thrust_distribution          [N]
+       thrust_per_blade                  [N]
+       thrust_coefficient                [-]
+       azimuthal_distribution            [rad]
+       disc_azimuthal_distribution       [rad]
+       blade_dQ_dR                       [N]
+       blade_dQ_dr                       [Nm]
+       blade_torque_distribution         [Nm]
+       disc_torque_distribution          [Nm]
+       torque_per_blade                  [Nm]
+       torque_coefficient                [-]
+       power                             [W]
+       power_coefficient                 [-]
+
+    Properties Used:
+    rotor.
+      number_of_blades                   [-]
+      tip_radius                         [m]
+      twist_distribution                 [radians]
+      chord_distribution                 [m]
+      orientation_euler_angles           [rad, rad, rad]
+    """  
+    # Unpack rotor blade parameters and operating conditions 
+    conditions            = state.conditions  
     propulsor_conditions  = conditions.energy[disributor.tag][propulsor.tag]
     rotor_conditions      = propulsor_conditions[rotor.tag]
     commanded_TV          = propulsor_conditions.commanded_thrust_vector_angle

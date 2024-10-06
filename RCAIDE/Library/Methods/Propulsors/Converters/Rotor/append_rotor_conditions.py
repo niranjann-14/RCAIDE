@@ -15,6 +15,7 @@ def append_rotor_conditions(rotor,segment,energy_conditions,noise_conditions):
     energy_conditions[rotor.tag].commanded_thrust_vector_angle = 0. * ones_row(1) 
     energy_conditions[rotor.tag].pitch_command                 = ones_row(1) * rotor.pitch_command
     energy_conditions[rotor.tag].torque                        = 0. * ones_row(1)
+    energy_conditions[rotor.tag].shaft_torque                  = 0. * ones_row(1)
     energy_conditions[rotor.tag].throttle                      = ones_row(1)
     energy_conditions[rotor.tag].thrust                        = 0. * ones_row(1)
     energy_conditions[rotor.tag].rpm                           = 0. * ones_row(1)

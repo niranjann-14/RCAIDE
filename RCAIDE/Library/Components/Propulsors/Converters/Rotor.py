@@ -65,7 +65,8 @@ class Rotor(Component):
         self.blade_solidity                    = 0.0 
         self.flap_angle                        = 0.0
         self.number_azimuthal_stations         = 24  
-        self.vtk_airfoil_points                = 40        
+        self.vtk_airfoil_points                = 40
+        self.propulsive_efficiency             = 0.8
         self.Airfoils                          = Airfoil_Container()
         self.airfoil_polar_stations            = None 
         
@@ -82,7 +83,7 @@ class Rotor(Component):
         self.phase_offset_angle                = 0.0
         self.orientation_euler_angles          = [0.,0.,0.]  # vector of angles defining default orientation of rotor
         self.pitch_command                     = 0.0
-        self.ducted                            = False
+        self.fidelity                          = "BEMT"      # BEMT or Actuator_Disc
         self.sol_tolerance                     = 1e-8 
         self.use_2d_analysis                   = False       # True if rotor is at an angle relative to freestream or nonuniform freestream
         self.nonuniform_freestream             = False   
