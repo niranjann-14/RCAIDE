@@ -27,3 +27,4 @@ from .Butanol		 	 import Butanol
 from .Propanol			 import Propanol
 from .Alkane_Mixture	 import Alkane_Mixture
 from .Alcohol_Mixture	 import Alcohol_Mixture
+from .Liquid_Petroleum_Gas import Liquid_Petroleum_Gas
