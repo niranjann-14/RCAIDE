@@ -6,7 +6,8 @@
 # ----------------------------------------------------------------------------------------------------------------------
 #  IMPORT
 # ---------------------------------------------------------------------------------------------------------------------- 
- # RCAIDE imports 
+ # RCAIDE imports
+import RCAIDE
 from RCAIDE.Framework.Core                              import Data , Units, orientation_product, orientation_transpose 
 from RCAIDE.Framework.Analyses.Propulsion               import Rotor_Wake_Fidelity_One
 from RCAIDE.Library.Methods.Aerodynamics.Common.Lift    import compute_airfoil_aerodynamics,compute_inflow_and_tip_loss  
@@ -124,30 +125,43 @@ def Acutator_Disc_Model(state,propulsor,rotor,disributor,center_of_gravity):
     # Check and correct for hover
     V         = V_thrust[:,0,None]
     V[V==0.0] = 1E-6
-     
+
     # Unpack     
     etap   = rotor.propulsive_efficiency
     omega  = rotor_conditions.omega
     torque = rotor_conditions.shaft_torque 
-    
-    # Do very little calculations
+     
     power  = torque*omega
     n      = omega/(2.*np.pi) 
     D      = 2*R
+    A       = np.pi*(R**2 - rotor.hub_radius**2)
     
-    thrust = etap*power/V
+    if type(rotor) == RCAIDE.Library.Components.Propulsors.Converters.Propeller:
+        
+        thrust = etap*power/V 
+        Cp     = power/(rho*(n*n*n)*(D*D*D*D*D))
+        conditions.propulsion.etap = etap
     
-    Cp     = power/(rho*(n*n*n)*(D*D*D*D*D))
-    conditions.propulsion.etap = etap
+        # calculate coefficients
+        D        = 2*R
+        Cq       = torque/(rho*(n*n)*(D*D*D*D*D))
+        Ct       = thrust/(rho*(n*n)*(D*D*D*D)) 
+        Cp       = power/(rho*(n*n*n)*(D*D*D*D*D)) 
+        etap     = V*thrust/power
+    else:
+        from scipy.optimize import fsolve
+        
+        # Define the expression whose roots we want to find
+        
+        kappa =  1.2
+        func = lambda T : power -  (T * V +  kappa * T * (-V / 2 +  np.sqrt((V**2)/4 + T/(2*rho*A))))
+        T_guess = 1
+        thrust = fsolve(func, T_guess)    
+        Ct       = thrust/(rho*A * (omega * R) ** 2)  
+        Cp       = power/(rho*A * (omega * R) ** 3)  
+        Cq       = power/(rho*A * R * (omega * R) ** 2)     
 
-    # calculate coefficients
-    D        = 2*R
-    Cq       = torque/(rho*(n*n)*(D*D*D*D*D))
-    Ct       = thrust/(rho*(n*n)*(D*D*D*D)) 
-    Cp       = power/(rho*(n*n*n)*(D*D*D*D*D)) 
-    etap     = V*thrust/power
-    A        = np.pi*(R**2 - rotor.hub_radius**2)
-    FoM      = thrust*np.sqrt(thrust/(2*rho*A))/power  
+    FoM      = thrust*np.sqrt(thrust/(2*rho*A))/power    
 
     # prevent things from breaking
     Cq[Cq<0]                   = 0.
