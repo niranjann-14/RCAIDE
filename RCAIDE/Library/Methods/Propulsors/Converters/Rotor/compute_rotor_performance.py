@@ -14,6 +14,7 @@ from RCAIDE.Library.Methods.Aerodynamics.Common.Lift    import compute_airfoil_a
 
 # package imports
 import  numpy as  np 
+from scipy.optimize import fsolve 
 
 # ---------------------------------------------------------------------------------------------------------------------- 
 #  Generalized Rotor Class
@@ -92,9 +93,9 @@ def compute_rotor_performance(propulsor,state,disributor, center_of_gravity= [[0
     elif 'propeller' in  propulsor:
         rotor =  propulsor.propeller
     
-    if rotor.fidelity == "Acutator_Disc":
+    if rotor.fidelity == "Momentum_Theory":
         Acutator_Disc_Model(state,propulsor,rotor,disributor,center_of_gravity)
-    elif rotor.fidelity ==  "BEMT":
+    elif rotor.fidelity ==  "Blade_Element_Momentum_Theory":
         Blade_Element_Momentum_Theory(state,propulsor,rotor,disributor,center_of_gravity)
     else:
         Blade_Element_Momentum_Theory(state,propulsor,rotor,disributor,center_of_gravity)
@@ -140,8 +141,7 @@ def Acutator_Disc_Model(state,propulsor,rotor,disributor,center_of_gravity):
         
         thrust = etap*power/V 
         Cp     = power/(rho*(n*n*n)*(D*D*D*D*D))
-        conditions.propulsion.etap = etap
-    
+        
         # calculate coefficients
         D        = 2*R
         Cq       = torque/(rho*(n*n)*(D*D*D*D*D))
@@ -149,19 +149,19 @@ def Acutator_Disc_Model(state,propulsor,rotor,disributor,center_of_gravity):
         Cp       = power/(rho*(n*n*n)*(D*D*D*D*D)) 
         etap     = V*thrust/power
     else:
-        from scipy.optimize import fsolve
-        
-        # Define the expression whose roots we want to find
-        
-        kappa =  1.2
-        func = lambda T : power -  (T * V +  kappa * T * (-V / 2 +  np.sqrt((V**2)/4 + T/(2*rho*A))))
-        T_guess = 1
-        thrust = fsolve(func, T_guess)    
+        # Define the expression whose roots we want to find 
+        kappa    =  1.2
+        thrust   =  np.zeros_like(power)
+        for i in  range(ctrl_pts):
+            func           = lambda T : power[i, 0] -  (T * V[i, 0] +  kappa * T * (-V[i, 0] / 2 +  np.sqrt((V[i, 0]**2)/4 + T/(2*rho[i, 0]*A))))
+            T_guess        = 1
+            thrust[i, 0]   = fsolve(func, T_guess)    
         Ct       = thrust/(rho*A * (omega * R) ** 2)  
         Cp       = power/(rho*A * (omega * R) ** 3)  
-        Cq       = power/(rho*A * R * (omega * R) ** 2)     
+        Cq       = power/(rho*A * R * (omega * R) ** 2)    
+        etap     = V*thrust/power 
 
-    FoM      = thrust*np.sqrt(thrust/(2*rho*A))/power    
+    FoM  = thrust*np.sqrt(thrust/(2*rho*A))/power    
 
     # prevent things from breaking
     Cq[Cq<0]                   = 0.

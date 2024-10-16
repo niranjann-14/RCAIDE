@@ -83,7 +83,7 @@ class Rotor(Component):
         self.phase_offset_angle                = 0.0
         self.orientation_euler_angles          = [0.,0.,0.]  # vector of angles defining default orientation of rotor
         self.pitch_command                     = 0.0
-        self.fidelity                          = "BEMT"      # BEMT or Actuator_Disc
+        self.fidelity                          = "Blade_Element_Momentum_Theory"      #  or Momentum_Theory
         self.sol_tolerance                     = 1e-8 
         self.use_2d_analysis                   = False       # True if rotor is at an angle relative to freestream or nonuniform freestream
         self.nonuniform_freestream             = False   
