@@ -15,16 +15,20 @@ from RCAIDE.Library.Plots import *
 # Python imports
 import os 
 import numpy as np
-import matplotlib.pyplot as plt    
+import matplotlib.pyplot as plt
+import time   
  
 
 # ----------------------------------------------------------------------
 #   Main
 # ----------------------------------------------------------------------
 
-def main():   
+def main():
+    ti = time.time()
     single_airfoil()
-    multi_airfoil()
+    tf = time.time()
+    print(tf-ti/60)
+    # multi_airfoil()
     
     return 
     

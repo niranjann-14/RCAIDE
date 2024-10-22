@@ -9,13 +9,13 @@
 #  IMPORT
 # ----------------------------------------------------------------------------------------------------------------------
 # RCAIDE imports  
-from RCAIDE.Framework.Core import Data
-from .hess_smith           import hess_smith
-from .thwaites_method      import thwaites_method 
-from .heads_method         import heads_method 
-from .aero_coeff           import aero_coeff
+from RCAIDE.Framework.Core   import Data
+from .hess_smith             import hess_smith
+from .thwaites_method        import thwaites_method
+from .heads_method           import heads_method
+from .aero_coeff             import aero_coeff
 from .chordwise_distribution import chordwise_distribution
-from .cf_filter            import cf_filter
+from .cf_filter              import cf_filter
 
 # pacakge imports  
 import numpy as np  
@@ -24,7 +24,7 @@ import numpy as np
 # airfoil_analysis.py
 # ----------------------------------------------------------------------------------------------------------------------
 ## @ingroup Methods-Aerodynamics-Airfoil_Panel_Method
-def airfoil_analysis(airfoil_geometry,alpha,Re_L,initial_momentum_thickness=1E-5,tolerance = 1E0,H_wake = 1.05,Ue_wake = 0.99):
+def airfoil_analysis(airfoil_geometry,alpha,Re_L,batch_analysis,initial_momentum_thickness=1E-5,tolerance = 1E0,H_wake = 1.05,Ue_wake = 0.99):
     """This computes the aerodynamic polars as well as the boundary layer properties of 
     an airfoil at a defined set of reynolds numbers and angle of attacks
 
@@ -78,8 +78,15 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,initial_momentum_thickness=1E-5
     Properties Used:
     N/A
     """     
-    ncases       = len(alpha[0,:]) 
-    ncpts        = len(Re_L)  
+    ncases       = len(alpha) 
+    if batch_analysis == True:
+        ncpts    = 1
+        # Reynolds number
+        RE_L_VALS = np.atleast_2d(Re_L).T
+    else:
+        ncpts    = len(Re_L)
+        
+        
     x_coord      = airfoil_geometry.x_coordinates
     y_coord      = airfoil_geometry.y_coordinates
     npanel       = len(x_coord)-1 
@@ -90,10 +97,9 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,initial_momentum_thickness=1E-5
     # Begin by solving for velocity distribution at airfoil surface using inviscid panel simulation
     # these are the locations (faces) where things are computed , len = n panel
     # dimension of vt = npanel x ncases x ncpts
-    X,Y,vt,normals = hess_smith(x_coord_3d,y_coord_3d,alpha,Re_L,npanel)  
+    X,Y,vt,normals = hess_smith(x_coord_3d,y_coord_3d,alpha,Re_L,npanel,ncases,ncpts)  
     
-    # Reynolds number 
-    RE_L_VALS = Re_L.T 
+    
     
     # kinematic coefficient of viscosity (assuming unit chord and unit inlet velocity)
     nu           = 1/RE_L_VALS
@@ -117,6 +123,7 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,initial_momentum_thickness=1E-5
     aoas            = list(np.repeat(np.arange(ncases),ncpts))
     res             = list(np.tile(np.arange(ncpts),ncases) )
     X_BOT.mask[first_panel,aoas,res] = False
+    X_BOT_mask      = X_BOT.mask
     
     # flow velocity and pressure of on botton surface 
     VE_BOT          = -VT[::-1]  
@@ -134,7 +141,7 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,initial_momentum_thickness=1E-5
     # x - location of stagnation point 
     L_BOT                          = X_BOT[-1,:,:]    
         
-    # laminar boundary layer properties using thwaites method  
+    # laminar boundary layer properties using thwaites method
     BOT_T_RESULTS  = thwaites_method(npanel,ncases,ncpts, nu, L_BOT , RE_L_VALS, X_BOT, VE_BOT, DVE_BOT,tolerance,
                                       THETA_0=initial_momentum_thickness)
     

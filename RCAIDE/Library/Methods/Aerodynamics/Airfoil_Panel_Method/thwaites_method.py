@@ -11,6 +11,7 @@ from RCAIDE.Framework.Core import Data
 
 # pacakge imports  
 import numpy as np
+from numba import jit
 
 # ----------------------------------------------------------------------------------------------------------------------
 #  Thwaites Method
@@ -63,27 +64,31 @@ def thwaites_method(npanel,ncases,ncpts,NU,L,RE_L,X_I,VE_I, DVE_I,tol,THETA_0):
     RE_X_T       = np.zeros_like(X_T)
     DELTA_T      = np.zeros_like(X_T)  
       
-    for case in range(ncases):
+    for cases in range(ncases):
         for cpt in range(ncpts):
             
-            def dy_by_dx(index, X, Y):
+            @jit(nopython=True)
+            def dy_by_dx(index, X, Y, nu, Ve_i):
                 return 0.45*nu*Ve_i[index]**5            
             
-            l              = L[case,cpt]
-            theta_0        = THETA_0 
-            Re_L           = RE_L[case,cpt]
-            x_i            = X_I.data[:,case,cpt][X_I.mask[:,case,cpt] ==False]
-            Ve_i           = VE_I.data[:,case,cpt][VE_I.mask[:,case,cpt] ==False]
-            dVe_i          = DVE_I.data[:,case,cpt][DVE_I.mask[:,case,cpt] ==False]
-            nu             = NU[case,cpt]
+            theta_0        = THETA_0
+            x_i            = X_I.data[:,cases,cpt][X_I.mask[:,cases,cpt] ==False]
+            Ve_i           = VE_I.data[:,cases,cpt][VE_I.mask[:,cases,cpt] ==False]
+            dVe_i          = DVE_I.data[:,cases,cpt][DVE_I.mask[:,cases,cpt] ==False]
+            nu             = NU[cases,cpt]
             n              = len(x_i)
             dx_i           = np.diff(x_i)
             theta2_Ve6     = np.zeros(n)
             theta2_Ve6[0]  = (theta_0**2)*Ve_i[0]**6
             
-            # determine (Theta**2)*(Ve**6)
-            for i in range(1,n):
-                theta2_Ve6[i] = RK4(i-1, dx_i, x_i, theta2_Ve6, dy_by_dx)
+            @jit(nopython=True)
+            def thwaites_loop(theta2_Ve6):
+                # determine (Theta**2)*(Ve**6)
+                for i in range(1,n):
+                    theta2_Ve6[i] = RK4(i-1, dx_i, x_i, theta2_Ve6, dy_by_dx, nu, Ve_i)
+                return theta2_Ve6
+            
+            theta2_Ve6 = thwaites_loop(theta2_Ve6)
             
             # Compute momentum thickness
             theta       = np.sqrt(theta2_Ve6/Ve_i**6)
@@ -124,17 +129,17 @@ def thwaites_method(npanel,ncases,ncpts,NU,L,RE_L,X_I,VE_I, DVE_I,tol,THETA_0):
             Re_x[0]     = 1E-5
             
             # Find where matrices are not masked 
-            indices = np.where(X_I.mask[:,case,cpt] == False)
+            indices = np.where(X_I.mask[:,cases,cpt] == False)
             
             # Store results 
-            np.put(X_T[:,case,cpt],indices,x_i)
-            np.put(THETA_T[:,case,cpt],indices,theta)
-            np.put(DELTA_STAR_T[:,case,cpt],indices,del_star)
-            np.put(H_T[:,case,cpt],indices,H)
-            np.put(CF_T[:,case,cpt],indices ,cf)
-            np.put(RE_THETA_T[:,case,cpt],indices,Re_theta)
-            np.put(RE_X_T[:,case,cpt],indices,Re_x)
-            np.put(DELTA_T[:,case,cpt],indices,delta)
+            np.put(X_T[:,cases,cpt],indices,x_i)
+            np.put(THETA_T[:,cases,cpt],indices,theta)
+            np.put(DELTA_STAR_T[:,cases,cpt],indices,del_star)
+            np.put(H_T[:,cases,cpt],indices,H)
+            np.put(CF_T[:,cases,cpt],indices ,cf)
+            np.put(RE_THETA_T[:,cases,cpt],indices,Re_theta)
+            np.put(RE_X_T[:,cases,cpt],indices,Re_x)
+            np.put(DELTA_T[:,cases,cpt],indices,delta)
     
     RESULTS = Data(
         X_T          = X_T,      
@@ -201,12 +206,12 @@ def getcf(lambda_val , Re_theta):
     cf      = 2*l/Re_theta  
     return cf
 
-
-def RK4(ind, dx, x, Var, Slope):
-    m1 = Slope(ind,  x[ind],  Var[ind])
-    m2 = Slope(ind,  x[ind] + dx[ind]/2,  Var[ind] + m1*dx[ind]/2)
-    m3 = Slope(ind,  x[ind] + dx[ind]/2,  Var[ind] + m2*dx[ind]/2)
-    m4 = Slope(ind,  x[ind] + dx[ind],  Var[ind] + m3*dx[ind])
+@jit(nopython=True)
+def RK4(ind, dx, x, Var, Slope, nu, Ve_i):
+    m1 = Slope(ind,  x[ind],  Var[ind], nu, Ve_i)
+    m2 = Slope(ind,  x[ind] + dx[ind]/2,  Var[ind] + m1*dx[ind]/2, nu, Ve_i)
+    m3 = Slope(ind,  x[ind] + dx[ind]/2,  Var[ind] + m2*dx[ind]/2, nu, Ve_i)
+    m4 = Slope(ind,  x[ind] + dx[ind],  Var[ind] + m3*dx[ind], nu, Ve_i)
     
     change = (dx[ind]/6)*(m1 + 2*m2 + 2*m3 + m4)
     return Var[ind] + change            
