@@ -37,11 +37,11 @@ def single_airfoil():
     # Batch analysis of single airfoil - NACA 4412 
     # -----------------------------------------------
     AoA_deg              = np.linspace(-5,10,16)
-    Re_vals              = np.atleast_2d(np.ones(len(AoA_deg)))*1E5 
-    AoA_rad              = np.atleast_2d(AoA_deg*Units.degrees)   
+    Re_vals              = np.atleast_1d(1E5) 
+    AoA_rad              = AoA_deg*Units.degrees  
     airfoil_file_1       = '4412'
     airfoil_geometry_1   = compute_naca_4series(airfoil_file_1,npoints = 201)
-    airfoil_properties_1 = airfoil_analysis(airfoil_geometry_1,AoA_rad,Re_vals)  
+    airfoil_properties_1 = airfoil_analysis(airfoil_geometry_1,AoA_rad,Re_vals,batch_analysis=False)  
     
     # # distribution plots
     # for i in range(16):
