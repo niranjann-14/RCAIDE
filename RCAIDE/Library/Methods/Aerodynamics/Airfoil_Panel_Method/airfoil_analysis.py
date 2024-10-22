@@ -85,7 +85,7 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,batch_analysis,initial_momentum
         RE_L_VALS = np.atleast_2d(Re_L).T
     else:
         ncpts    = len(Re_L)
-        
+        RE_L_VALS = np.tile(Re_L[None,:], (ncases,1))
         
     x_coord      = airfoil_geometry.x_coordinates
     y_coord      = airfoil_geometry.y_coordinates
