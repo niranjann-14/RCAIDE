@@ -34,6 +34,7 @@ def evaluate_CRN_emission_indices_no_surrogate(segment,settings,vehicle):
                         if propulsor.active == True: 
                             if (type(propulsor) == RCAIDE.Library.Components.Propulsors.Turbofan) or \
                                 type(propulsor) == RCAIDE.Library.Components.Propulsors.Turboshaft or \
+                                type(propulsor) == RCAIDE.Library.Components.Propulsors.Turboprop or \
                                 type(propulsor) == RCAIDE.Library.Components.Propulsors.Turbojet:    
                             
                                 combustor = propulsor.combustor
@@ -47,6 +48,7 @@ def evaluate_CRN_emission_indices_no_surrogate(segment,settings,vehicle):
                                 T    = combustor_conditions.inputs.stagnation_temperature
                                 P    = combustor_conditions.inputs.stagnation_pressure 
                                 mdot = propulsor_conditions.core_mass_flow_rate 
+                                mdot_fuel = propulsor_conditions.fuel_flow_rate 
                                 FAR  = combustor_conditions.outputs.fuel_to_air_ratio 
 
                                 EI_CO2_comb   = 0 * state.ones_row(1)   
@@ -72,17 +74,17 @@ def evaluate_CRN_emission_indices_no_surrogate(segment,settings,vehicle):
                                         EI_NO_comb[t_idx,0]  = results.EI_NO 
                                         EI_NO2_comb[t_idx,0] = results.EI_NO2
                                         
-                                        EI_CO2_prev = EI_CO2_comb 
-                                        EI_CO_prev  =  EI_CO_comb  
-                                        EI_H2O_prev = EI_H2O_comb 
-                                        EI_NO_prev  =  EI_NO_comb  
-                                        EI_NO2_prev = EI_NO2_comb 
+                                        EI_CO2_prev          = EI_CO2_comb 
+                                        EI_CO_prev           =  EI_CO_comb  
+                                        EI_H2O_prev          = EI_H2O_comb 
+                                        EI_NO_prev           =  EI_NO_comb  
+                                        EI_NO2_prev          = EI_NO2_comb 
                                     
-                                CO2_total  += np.dot(I,mdot*EI_CO2_comb)
-                                CO_total   += np.dot(I,mdot *EI_CO_comb )
-                                H2O_total  += np.dot(I,mdot*EI_H2O_comb)
-                                NO_total   += np.dot(I,mdot *EI_NO_comb ) 
-                                NO2_total  += np.dot(I,mdot *EI_NO2_comb)
+                                CO2_total  += np.dot(I,mdot_fuel*EI_CO2_comb)
+                                CO_total   += np.dot(I,mdot_fuel*EI_CO_comb )
+                                H2O_total  += np.dot(I,mdot_fuel*EI_H2O_comb)
+                                NO_total   += np.dot(I,mdot_fuel*EI_NO_comb ) 
+                                NO2_total  += np.dot(I,mdot_fuel*EI_NO2_comb)
 
     emissions                 = Data()
     emissions.total           = Data()
