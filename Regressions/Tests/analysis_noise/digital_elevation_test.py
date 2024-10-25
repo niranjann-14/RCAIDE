@@ -21,13 +21,11 @@ from NASA_X57    import vehicle_setup, configs_setup
 # ----------------------------------------------------------------------
 #   Main
 # ---------------------------------------------------------------------- 
-def main():
-
-
+def main():       
     plot_elevation_contours(topography_file   ='LA_Metropolitan_Area.txt',use_lat_long_coordinates = True, save_filename = "Elevation_Contours_Lat_Long")
 
-    plot_elevation_contours(topography_file   ='LA_Metropolitan_Area.txt',use_lat_long_coordinates = False, save_filename = "Elevation_Contours_XY")
-    
+    plot_elevation_contours(topography_file   ='LA_Metropolitan_Area.txt',use_lat_long_coordinates = False, save_filename = "Elevation_Contours_XY")  
+      
     vehicle  = vehicle_setup()      
     vehicle.networks.electric.busses.bus.identical_propulsors     = False # only for regression     
     configs  = configs_setup(vehicle) 
@@ -57,11 +55,11 @@ def main():
     
     plot_results(results,noise_data,regression_plotting_flag)   
 
-    X57_SPL        = np.max(results.segments.cruise.conditions.noise.SPL_dBA) 
-    X57_SPL_true   = 58.07971761839425
+    X57_SPL        = np.max(results.segments.climb.conditions.noise.total_SPL_dBA) 
+    X57_SPL_true   = 45.232719642900996
     X57_diff_SPL   = np.abs(X57_SPL - X57_SPL_true)
     print('Error: ',X57_diff_SPL)
-    assert np.abs((X57_SPL - X57_SPL_true)/X57_SPL_true) < 1e-3 
+    assert np.abs((X57_SPL - X57_SPL_true)/X57_SPL_true) < 1e-3    
      
     return      
 
@@ -89,7 +87,7 @@ def base_analysis(vehicle):
  
     # ------------------------------------------------------------------
     #  Weights
-    weights         = RCAIDE.Framework.Analyses.Weights.Weights_General_Aviation()
+    weights         = RCAIDE.Framework.Analyses.Weights.Weights_EVTOL()
     weights.vehicle = vehicle
     analyses.append(weights)
 
@@ -104,13 +102,9 @@ def base_analysis(vehicle):
     noise = RCAIDE.Framework.Analyses.Noise.Frequency_Domain_Buildup()   
     noise.vehicle = vehicle
     noise.settings.mean_sea_level_altitude          = False         
-    noise.settings.aircraft_origin_coordinates      = [33.94067953101678, -118.40513722978149]# Los Angeles International Airport
-    noise.settings.aircraft_destination_coordinates = [33.8146, -118.1459]  # Ontario International airport 
-    noise.settings.microphone_x_resolution          = 150 # 1200
-    noise.settings.microphone_y_resolution          = 200 # 1600 
-    noise.settings.number_of_microphone_in_stencil  = 10  # 50
-    noise.settings.noise_control_points             = 100 # 225
-    noise.settings.topography_file                  = 'LA_Metropolitan_Area.txt' 
+    noise.settings.aircraft_departure_coordinates   = [33.94067953101678, -118.40513722978149]
+    noise.settings.aircraft_destination_coordinates = [33.81713622114423, -117.92111163722772]  
+    #noise.settings.topography_file                  = 'LA_Metropolitan_Area.txt' 
     analyses.append(noise)
 
     # ------------------------------------------------------------------
@@ -145,7 +139,7 @@ def mission_setup(analyses):
     mission.tag   = 'mission' 
     Segments      = RCAIDE.Framework.Mission.Segments  
     base_segment  = Segments.Segment()   
-    base_segment.state.numerics.number_of_control_points  = 5
+    base_segment.state.numerics.number_of_control_points  = 10
     base_segment.state.numerics.discretization_method     = RCAIDE.Library.Methods.Utilities.Chebyshev.linear_data
     
     segment = Segments.Cruise.Constant_Speed_Constant_Altitude(base_segment) 
@@ -154,8 +148,8 @@ def mission_setup(analyses):
     segment.initial_battery_state_of_charge              = 1.0       
     segment.altitude                                     = 30
     segment.air_speed                                    = 100
-    segment.distance                                     = 17 * Units.miles
-    segment.true_course                                  = 130 *Units.degrees 
+    segment.distance                                     = 1000  
+    segment.true_course                                  = 0
     
     # define flight dynamics to model 
     segment.flight_dynamics.force_x                      = True  

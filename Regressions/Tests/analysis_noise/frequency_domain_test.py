@@ -3,11 +3,11 @@
 # Imports    
 import RCAIDE
 from RCAIDE.Framework.Core import Units, Data  
-from RCAIDE.Library.Methods.Noise.Frequency_Domain_Buildup.Rotor                  import compute_rotor_noise
-from RCAIDE.Framework.Mission.Common                                              import Results  
-from RCAIDE.Framework.Mission.Segments.Segment                                    import Segment 
-from RCAIDE.Framework.Mission.Common                                              import Conditions
-from RCAIDE.Library.Methods.Propulsors.Converters.Rotor.compute_rotor_performance import compute_rotor_performance 
+from RCAIDE.Library.Methods.Noise.Frequency_Domain_Buildup.Rotor.compute_rotor_noise_new        import compute_rotor_noise
+from RCAIDE.Framework.Mission.Common                                                            import Results  
+from RCAIDE.Framework.Mission.Segments.Segment                                                  import Segment 
+from RCAIDE.Framework.Mission.Common                                                            import Conditions
+from RCAIDE.Library.Methods.Propulsors.Converters.Rotor.compute_rotor_performance               import compute_rotor_performance 
 from RCAIDE.Library.Plots import * 
 
 # Python Imports  
@@ -35,8 +35,8 @@ def main():
     # harmonic noise test 
     Harmonic_Noise_Validation(PP)
 
-    # broadband nosie test function 
-    Broadband_Noise_Validation(PP)
+    # # broadband nosie test function 
+    # Broadband_Noise_Validation(PP)
     
     return  
     
@@ -48,7 +48,7 @@ def Harmonic_Noise_Validation(PP):
     
     verification_values_60deg      = [156.92733365790193,100.86943888034477,109.60611659108622 ]
     verification_values_90deg      = [159.07711862067382,107.37402397630274,117.14527113998096 ]
-    fidelities                     = ['point_source', 'line_source', 'plane_source']
+    fidelities                     = ['plane_source']#['point_source', 'line_source', 'plane_source']
     bus                            = RCAIDE.Library.Components.Energy.Distributors.Electrical_Bus() 
     electric_rotor                 = RCAIDE.Library.Components.Propulsors.Electric_Rotor() 
     rotor                          = F8745_D4_Propeller() 
@@ -60,7 +60,8 @@ def Harmonic_Noise_Validation(PP):
     T                       = 288.16889478  
     density                 = 1.2250	
     dynamic_viscosity       = 1.81E-5  
-    theta                   = np.array([1,10,20,30.1,40,50,59.9,70,80,89.9,100,110,120.1,130,140,150.1,160,170,179])  
+    # theta                   = np.array([1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,179,1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,179])
+    # theta                   = np.array([1,10,20,30.1,40,50,59.9,70,80,89.9,100,110,120.1,130,140,150.1,160,170,179]) 
     S                       = 4.
     test_omega              = np.array([2390,2710,2630]) * Units.rpm    
     ctrl_pts                = len(test_omega)
@@ -296,7 +297,7 @@ def Broadband_Noise_Validation(PP):
     # time
     ti = time.time()             
     # Run Frequency Domain Rotor Noise Model           
-    compute_rotor_noise(mic_positions,bus,electric_rotor,rotor,segment,settings)
+    compute_rotor_noise(mic_positions,bus,electric_rotor,segment,settings)
     tf = time.time()
     
     APC_SF_1_3_Spectrum                                     = conditions.noise[bus.tag][electric_rotor.tag][rotor.tag].SPL_1_3_spectrum 

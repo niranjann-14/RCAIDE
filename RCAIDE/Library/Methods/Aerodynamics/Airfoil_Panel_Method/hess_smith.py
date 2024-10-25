@@ -20,7 +20,7 @@ import numpy as np
 # hess_smith
 # ---------------------------------------------------------------------------------------------------------------------- 
 ## @ingroup Methods-Aerodynamics-Airfoil_Panel_Method
-def hess_smith(x_coord,y_coord,alpha,Re,npanel):
+def hess_smith(x_coord,y_coord,alpha,Re,npanel,ncases,ncpts):
     """Computes the incompressible, inviscid flow over an airfoil of  arbitrary shape using the Hess-Smith panel method.  
 
     Assumptions:
@@ -50,8 +50,6 @@ def hess_smith(x_coord,y_coord,alpha,Re,npanel):
     N/A
     """      
     
-    ncases    = len(alpha[0,:])
-    ncpts     = len(Re) 
     alpha_2d  = np.repeat(alpha.T[np.newaxis,:, :], npanel, axis=0) 
     
     # generate panel geometry data for later use   

@@ -12,8 +12,8 @@
 import RCAIDE
 from RCAIDE.Framework.Core                                                          import Data , Units 
 from RCAIDE.Library.Methods.Aerodynamics.Airfoil_Panel_Method.airfoil_analysis      import airfoil_analysis
-from RCAIDE.Library.Methods.Geometry.Airfoil.import_airfoil_polars                  import import_airfoil_polars 
-from RCAIDE.Library.Methods.Geometry.Airfoil.compute_naca_4series                   import compute_naca_4series  
+from RCAIDE.Library.Methods.Geometry.Two_Dimensional.Airfoil.import_airfoil_polars  import import_airfoil_polars 
+from RCAIDE.Library.Methods.Geometry.Two_Dimensional.Airfoil.compute_naca_4series   import compute_naca_4series  
 from RCAIDE.Library.Methods.Aerodynamics.AERODAS.pre_stall_coefficients             import pre_stall_coefficients
 from RCAIDE.Library.Methods.Aerodynamics.AERODAS.post_stall_coefficients            import post_stall_coefficients
 
@@ -290,7 +290,7 @@ def compute_boundary_layer_properties(airfoil_geometry,Airfoil_Data):
     if airfoil_geometry == None:
         print('No airfoil defined, NACA 0012 surrogates will be used') 
         a_names                       = ['0012']                
-        airfoil_geometry              = compute_naca_4series(a_names, npoints= 100)    
+        airfoil_geometry              = compute_naca_4series(a_names, npoints= 101)    
     
     AoA_sweep = np.array([-4,0,2,4,8,10,14])*Units.degrees 
     Re_sweep  = np.array([1,5,10,30,50,75,100])*1E4  
@@ -298,7 +298,7 @@ def compute_boundary_layer_properties(airfoil_geometry,Airfoil_Data):
     Re_vals   = np.tile(Re_sweep[:,None],(1, len(AoA_sweep)))     
     
     # run airfoil analysis  
-    af_res  = airfoil_analysis(airfoil_geometry,AoA_vals,Re_vals,batch_analysis=False)
+    af_res  = airfoil_analysis(airfoil_geometry,AoA_vals,Re_vals) 
     
     # store data
     Airfoil_Data.aoa_from_polar                                     = np.tile(AoA_sweep[None,:],(len(Re_sweep),1)) 
@@ -320,6 +320,6 @@ def compute_boundary_layer_properties(airfoil_geometry,Airfoil_Data):
     Airfoil_Data.boundary_layer.delta_star_upper_surface            = af_res.delta_star   
     Airfoil_Data.boundary_layer.Ue_Vinf_upper_surface               = af_res.Ue_Vinf     
     Airfoil_Data.boundary_layer.cf_upper_surface                    = af_res.cf   
-    Airfoil_Data.boundary_layer.dcp_dx_upper_surface                = af_res.dcp_dx   
+    Airfoil_Data.boundary_layer.dcp_dx_upper_surface                = af_res.dcp_dx 
     
     return Airfoil_Data

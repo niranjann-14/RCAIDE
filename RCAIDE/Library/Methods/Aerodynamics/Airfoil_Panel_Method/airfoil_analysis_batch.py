@@ -2,8 +2,7 @@
 # RCAIDE/Methods/Aerodynamics/Airfoil_Panel_Method/airfoil_analysis.py
 # 
 # 
-# Created:  Dec 2023, M. Clarke
-# Modified: Apr 2023, N. Nanjappa
+# Created:  Oct 2024, Niranjan Nanjappa
 
 # ----------------------------------------------------------------------------------------------------------------------
 #  IMPORT
@@ -24,7 +23,7 @@ import numpy as np
 # airfoil_analysis.py
 # ----------------------------------------------------------------------------------------------------------------------
 ## @ingroup Methods-Aerodynamics-Airfoil_Panel_Method
-def airfoil_analysis(airfoil_geometry,alpha,Re_L,batch_analysis,initial_momentum_thickness=1E-5,tolerance = 1E0,H_wake = 1.05,Ue_wake = 0.99):
+def airfoil_analysis_batch(airfoil_geometry,alpha,Re_L,initial_momentum_thickness=1E-5,tolerance = 1E0,H_wake = 1.05,Ue_wake = 0.99):
     """This computes the aerodynamic polars as well as the boundary layer properties of 
     an airfoil at a defined set of reynolds numbers and angle of attacks
 
@@ -77,24 +76,19 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,batch_analysis,initial_momentum
                         
     Properties Used:
     N/A
-    """
-    ncases       = len(alpha[0,:])    
-    if batch_analysis == True:
-       ncpts        = 1
-    else:
-       ncpts        = len(Re_L[0,:])
-    
+    """     
+    ncases       = len(alpha)  
     x_coord      = airfoil_geometry.x_coordinates
     y_coord      = airfoil_geometry.y_coordinates
     npanel       = len(x_coord)-1 
                
-    x_coord_3d = np.tile(x_coord[:,None,None],(1,ncases,ncpts)) # number of points, number of cases, number of control points 
-    y_coord_3d = np.tile(y_coord[:,None,None],(1,ncases,ncpts)) # number of points, number of cases, number of control points 
+    x_coord_2d = np.tile(x_coord[:,None],(1,ncases)) # number of points, number of cases
+    y_coord_2d = np.tile(y_coord[:,None],(1,ncases)) # number of points, number of cases
         
     # Begin by solving for velocity distribution at airfoil surface using inviscid panel simulation
     # these are the locations (faces) where things are computed , len = n panel
     # dimension of vt = npanel x ncases x ncpts
-    X,Y,vt,normals = hess_smith(x_coord_3d,y_coord_3d,alpha,Re_L,npanel,ncases,ncpts)  
+    X,Y,vt,normals = hess_smith(x_coord_2d,y_coord_2d,alpha,Re_L,npanel,ncases)  
     
     # Reynolds number 
     RE_L_VALS = Re_L.T 
@@ -121,7 +115,6 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,batch_analysis,initial_momentum
     aoas            = list(np.repeat(np.arange(ncases),ncpts))
     res             = list(np.tile(np.arange(ncpts),ncases) )
     X_BOT.mask[first_panel,aoas,res] = False
-    X_BOT_mask      = X_BOT.mask
     
     # flow velocity and pressure of on botton surface 
     VE_BOT          = -VT[::-1]  
@@ -427,7 +420,7 @@ def airfoil_analysis(airfoil_geometry,alpha,Re_L,batch_analysis,initial_momentum
     x_coord_3d_bl  = X + DELTA*normals[:,0,:,:]
     npanel_mod     = npanel-1 
     
-    X_BL,Y_BL,vt_bl,normals_bl = hess_smith(x_coord_3d_bl,y_coord_3d_bl,alpha,Re_L,npanel_mod,ncases,ncpts)      
+    X_BL,Y_BL,vt_bl,normals_bl = hess_smith(x_coord_3d_bl,y_coord_3d_bl,alpha,Re_L,npanel_mod)      
       
     # ---------------------------------------------------------------------
     # Bottom surface of airfoil with boundary layer 
