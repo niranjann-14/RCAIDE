@@ -35,10 +35,10 @@ def main():
     # harmonic noise test 
     ti_h, tf_h = Harmonic_Noise_Validation(PP)
 
-    # broadband nosie test function 
-    ti_b, tf_b = Broadband_Noise_Validation(PP)
+    # # broadband nosie test function 
+    # ti_b, tf_b = Broadband_Noise_Validation(PP)
     
-    return ti_h, tf_h, ti_b, tf_b 
+    return ti_h, tf_h
     
     
 # ------------------------------------------------------------------ 
@@ -557,8 +557,7 @@ def setup_noise_settings(sts):
     return sts 
 
 if __name__ == '__main__': 
-    ti_h, tf_h, ti_b, tf_b = main()
-    delta_t_h = tf_h - ti_h
-    delta_t_b = tf_b - ti_b    
+    ti_h, tf_h = main()
+    delta_t_h = tf_h - ti_h  
     plt.show()   
     

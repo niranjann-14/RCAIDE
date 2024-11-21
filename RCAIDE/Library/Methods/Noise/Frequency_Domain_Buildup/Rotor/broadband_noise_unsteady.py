@@ -62,10 +62,10 @@ def broadband_noise_unsteady(conditions,propulsor_conditions,coordinates,rotor,s
         N/A   
     '''     
     aeroacoustic_data       = propulsor_conditions[rotor.tag]
-    num_cpt                 = len(coordinates.X[:,0,0,0,0])
-    num_mic                 = len(coordinates.X[0,:,0,0,0])  
-    num_blades              = len(coordinates.X[0,0,:,0,0])
-    num_sec                 = len(coordinates.X[0,0,0,:,0]) 
+    num_cpt                 = len(coordinates.X[:,0,0,0,0,0])
+    num_mic                 = len(coordinates.X[0,:,0,0,0,0])  
+    num_blades              = len(coordinates.X[0,0,0,:,0,0])
+    num_sec                 = len(coordinates.X[0,0,0,0,:,0]) 
     frequency               = settings.center_frequencies
     num_cf                  = len(frequency)
     num_az                  = aeroacoustic_data.number_azimuthal_stations
@@ -125,11 +125,11 @@ def broadband_noise_unsteady(conditions,propulsor_conditions,coordinates,rotor,s
         M                 = np.tile(disc_Ma[:,None,None,:,None,:],(1,num_mic,num_blades,1,num_cf,1)) # U/c_0 
         M_tot             = V_tot/c_0   
           
-        X_prime_r         = np.tile(coordinates.X_prime_r[:,:,:,:,None,None,:],(1,1,1,1,num_cf,num_az,1))
+        X_prime_r         = np.tile(coordinates.X_prime_r[:,:,0,:,:,None,None,:],(1,1,1,1,num_cf,num_az,1))
         cos_zeta_r        = np.sum(X_prime_r*V, axis = 6)/(np.linalg.norm(X_prime_r, axis = 6)*V_tot) 
-        r_er              = np.tile(np.linalg.norm(coordinates.X_e_r, axis = 4)[:,:,:,:,None,None],(1,1,1,1,num_cf,num_az))           
-        Phi_er            = np.tile(coordinates.phi_e_r[:,:,:,:,None,None],(1,1,1,1,num_cf,num_az))
-        Theta_er          = np.tile(coordinates.theta_e_r[:,:,:,:,None,None],(1,1,1,1,num_cf,num_az))    
+        r_er              = np.tile(np.linalg.norm(coordinates.X_e_r, axis = 5)[:,:,0,:,:,None,None],(1,1,1,1,num_cf,num_az))           
+        Phi_er            = np.tile(coordinates.phi_e_r[:,:,0,:,:,None,None],(1,1,1,1,num_cf,num_az))
+        Theta_er          = np.tile(coordinates.theta_e_r[:,:,0,:,:,None,None],(1,1,1,1,num_cf,num_az))    
         
         # flatten matrices 
         R_c        = flatten_matrix(R_c,num_cpt,num_mic,num_blades,num_sec,num_cf,num_az)

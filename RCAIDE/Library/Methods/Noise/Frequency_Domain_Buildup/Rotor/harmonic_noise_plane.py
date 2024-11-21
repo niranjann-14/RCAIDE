@@ -82,7 +82,7 @@ def harmonic_noise_plane(harmonics_blade,harmonics_load,conditions,propulsor_con
     num_h_b                 = len(harmonics_blade)
     num_h_l                 = len(harmonics_load)
     num_cpt                 = len(angle_of_attack) 
-    num_mic                 = len(coordinates.X_hub[0,:,0,0,0]) 
+    num_mic                 = len(coordinates.X_hub[0,:,0,0,0,0]) 
     phi_0                   = np.array([rotor.phase_offset_angle])  # phase angle offset  
     airfoils                = rotor.Airfoils 
     num_sec                 = len(rotor.radius_distribution)
@@ -201,20 +201,20 @@ def harmonic_noise_plane(harmonics_blade,harmonics_load,conditions,propulsor_con
     M_r_5          = np.sqrt(M_5**2 + (z_5**2)*(M_t_5**2))
     
     # retarded theta
-    theta_r        = coordinates.theta_hub_r[:,:,0,0]
+    theta_r        = coordinates.theta_hub_r[:,:,0,0,0]
     theta_r_3      = np.tile(theta_r[:,:,None],(1,1,num_h_b))
     theta_r_4      = np.tile(theta_r[:,:,None,None],(1,1,num_h_b,num_h_l))
     theta_r_5      = np.tile(theta_r[:,:,None,None,None],(1,1,num_sec,num_h_b,num_h_l))
     theta_r_6      = np.tile(theta_r[:,:,None,None,None,None],(1,1,num_sec,num_h_b,num_h_l,chord_coord))
     
     # retarded distance to source
-    Y              = np.sqrt(coordinates.X_hub[:,:,0,0,1]**2 +  coordinates.X_hub[:,:,0,0,2] **2)
+    Y              = np.sqrt(coordinates.X_hub[:,:,0,0,0,1]**2 +  coordinates.X_hub[:,:,0,0,0,2] **2)
     Y_3            = np.tile(Y[:,:,None],(1,1,num_h_b))
     r_3            = Y_3/np.sin(theta_r_3)
     
     # phase angles
     phi_0_vec      = np.tile(phi_0[:,None,None,None],(num_cpt,num_mic,num_h_b,num_h_l))
-    phi_4          = np.tile(coordinates.phi_hub_r[:,:,0,0,None,None],(1,1,num_h_b,num_h_l)) + phi_0_vec
+    phi_4          = np.tile(coordinates.phi_hub_r[:,:,0,0,0,None,None],(1,1,num_h_b,num_h_l)) + phi_0_vec
     phi_5          = np.tile(phi_4[:,:,None,:,:],(1,1,num_sec,1,1))
     phi_6          = np.tile(phi_4[:,:,None,:,:,None],(1,1,num_sec,1,1,chord_coord))
     
@@ -223,7 +223,7 @@ def harmonic_noise_plane(harmonics_blade,harmonics_load,conditions,propulsor_con
     theta_r_prime_5 = np.arccos(np.cos(theta_r_5)*np.cos(alpha_5) + np.sin(theta_r_5)*np.sin(phi_5)*np.sin(alpha_5))
     theta_r_prime_6 = np.arccos(np.cos(theta_r_6)*np.cos(alpha_6) + np.sin(theta_r_6)*np.sin(phi_6)*np.sin(alpha_6))
         
-    phi_prime_4    = np.arccos((np.sin(theta_r_4)*np.cos(phi_4))/np.sin(theta_r_prime_4))
+    phi_prime_4     = np.arccos((np.sin(theta_r_4)*np.cos(phi_4))/np.sin(theta_r_prime_4))
     
     # Velocity in the rotor frame
     T_body2inertial = conditions.frames.body.transform_to_inertial

@@ -96,7 +96,7 @@ def compute_rotor_noise(microphone_locations,distributor,propulsor,segment,setti
     # ----------------------------------------------------------------------------------    
     # Atmospheric attenuation 
     # ----------------------------------------------------------------------------------
-    delta_atmo = atmospheric_attenuation(np.linalg.norm(coordinates.X_r[:,0,0,0,:],axis=1),settings.center_frequencies)
+    delta_atmo = atmospheric_attenuation(np.linalg.norm(coordinates.X_r[:,0,0,0,0,:],axis=1),settings.center_frequencies)
 
     # ----------------------------------------------------------------------------------    
     # Combine Harmonic (periodic/tonal) and Broadband Noise
