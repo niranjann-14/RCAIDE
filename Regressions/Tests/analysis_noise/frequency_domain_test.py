@@ -115,7 +115,7 @@ def Harmonic_Noise_Validation(PP):
     # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Plot Validation Results
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
-    validation_data, axes_1_1, axes_1_2, axes_1_3, axes_1_4, axes_1_5, axes_1_6, axes_2_1 = Hararmonic_Noise_Validation_Data(PP)    
+    validation_data, axes_1_1, axes_1_2, axes_1_3, axes_1_4, axes_1_5, axes_1_6, axes_2, axes_3, axes_4 = Hararmonic_Noise_Validation_Data(PP)    
     
     # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Run simulation using different fidelities 
@@ -158,13 +158,13 @@ def Harmonic_Noise_Validation(PP):
 
         
         # plot results 
-        axes_1_1.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[0,6,:][:len(validation_data.harmonics)]   , color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = fidelities[fid])     
+        axes_1_1.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[0,6,:][:len(validation_data.harmonics)], color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = fidelities[fid])     
         axes_1_1.set_title('60 deg. Case 1, $C_P$ = ' + str(round(Cp[0,0],3))) 
          
-        axes_1_2.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[1,6,:][:len(validation_data.harmonics)] , color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0]  , markersize = PP.m , linewidth = PP.lw,   label = fidelities[fid])    
+        axes_1_2.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[1,6,:][:len(validation_data.harmonics)], color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0]  , markersize = PP.m , linewidth = PP.lw,   label = fidelities[fid])    
         axes_1_2.set_title('60 deg. Case 2, $C_P$ = ' +  str(round(Cp[1,0],3)))   
   
-        axes_1_3.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[2,6,:][:len(validation_data.harmonics)] , color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0]  , markersize = PP.m , linewidth = PP.lw,   label = fidelities[fid])        
+        axes_1_3.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[2,6,:][:len(validation_data.harmonics)], color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0]  , markersize = PP.m , linewidth = PP.lw,   label = fidelities[fid])        
         axes_1_3.set_title('60 deg. Case 3, $C_P$ = ' +  str(round(Cp[2,0],3))) 
           
         axes_1_4.plot(validation_data.harmonics, F8745D4_SPL_harmonic_bpf_spectrum[0,9,:][:len(validation_data.harmonics)] , color = PP.Slc[fid] , linestyle = PP.Sls, marker = PP.Slm[0]  , markersize = PP.m , linewidth = PP.lw,  label = fidelities[fid])        
@@ -177,14 +177,35 @@ def Harmonic_Noise_Validation(PP):
         axes_1_6.set_title('90 deg. Case 3, $C_P$ = ' +  str(round(Cp[2,0],3)))    
         
         
-        # Polar plot of noise    
-        axes_2_1.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
-        axes_2_1.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
-        axes_2_1.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-        axes_2_1.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
-        axes_2_1.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-        axes_2_1.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
-
+        if fid == 0:
+            # Polar plot of noise    
+            axes_2.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
+            axes_2.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
+            axes_2.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_2.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
+            axes_2.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_2.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
+        
+        elif fid ==1:
+            # Polar plot of noise    
+            axes_3.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
+            axes_3.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
+            axes_3.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_3.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
+            axes_3.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_3.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )
+        
+        elif fid == 2:
+            # Polar plot of noise    
+            axes_4.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
+            axes_4.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
+            axes_4.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_4.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
+            axes_4.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_4.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
+        else:
+            pass
+        
         # Store errors 
         error = Data()
         error.SPL_Case_1_60deg  = np.max(np.abs(F8745D4_SPL_harmonic_bpf_spectrum[0,6,:][:len(validation_data.harmonics)]  - validation_data.Exp_Test_Case_1_60deg)/validation_data.Exp_Test_Case_1_60deg)  
@@ -197,8 +218,10 @@ def Harmonic_Noise_Validation(PP):
         # for k,v in list(error.items()):
         #     assert(np.abs(v)<1E0)
         
-    axes_1_5.legend(loc='upper center', prop={'size': PP.lf} , bbox_to_anchor=(0.5, -0.4), ncol= 3 )  
-    axes_2_1.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))    
+    axes_1_5.legend(loc='lower center', prop={'size': PP.lf} , bbox_to_anchor=(0.5, -0.4), ncol= 3 )  
+    axes_2.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))
+    axes_3.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))
+    axes_3.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))    
 
     return ti, tf
  
@@ -425,13 +448,23 @@ def Hararmonic_Noise_Validation_Data(PP):
     
 
     # Polar plot of noise   
-    fig_2 = plt.figure('Polar')
-    axes_2_1 = fig_2.add_subplot(111, projection='polar')         
-    axes_2_1.set_yticks(np.arange(50,150,25))     
-    axes_2_1.grid(True)  
+    fig_2 = plt.figure('Point Source')
+    axes_2 = fig_2.add_subplot(111, projection='polar')         
+    axes_2.set_yticks(np.arange(50,150,25))     
+    axes_2.grid(True)
+    
+    fig_3 = plt.figure('Line Source')
+    axes_3 = fig_3.add_subplot(111, projection='polar')         
+    axes_3.set_yticks(np.arange(50,150,25))     
+    axes_3.grid(True)
+    
+    fig_4 = plt.figure('Line Source')
+    axes_4 = fig_4.add_subplot(111, projection='polar')         
+    axes_4.set_yticks(np.arange(50,150,25))     
+    axes_4.grid(True)
 
 
-    return validation_data,  axes_1_1, axes_1_2, axes_1_3, axes_1_4, axes_1_5, axes_1_6, axes_2_1
+    return validation_data,  axes_1_1, axes_1_2, axes_1_3, axes_1_4, axes_1_5, axes_1_6, axes_2, axes_3, axes_4
 
 
 def Broadband_Noise_Validation_Data(PP):  
@@ -514,7 +547,7 @@ def plot_parameters():
         lw  = 1,                             # line_width               
         m   = 5,                             # markersize               
         lf  = 10,                            # legend_font_size         
-        Slc = ['black','green','yellow'],       # line_colors        
+        Slc = ['black','green','orange'],    # line_colors        
         Slm = ['^','o','s'],                 # line_markers       
         Sls = '-',                           # line_styles        
         Elc = ['darkred','red','tomato'],    # Experimental_line_colors 
