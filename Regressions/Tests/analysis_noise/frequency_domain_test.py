@@ -12,11 +12,12 @@ from RCAIDE.Library.Plots import *
 
 # Python Imports  
 import sys 
-import numpy as np 
+import numpy as np  
 import matplotlib.pyplot as plt 
-import time 
+import time   
+import os 
 
-sys.path.append('../../Vehicles/Rotors')
+sys.path.append(os.path.join( os.path.split(os.path.split(sys.path[0])[0])[0], 'Vehicles' + os.path.sep + 'Rotors'))
 # the analysis functions
 
 from F8745_D4_Propeller  import F8745_D4_Propeller
@@ -221,7 +222,7 @@ def Harmonic_Noise_Validation(PP):
     axes_1_5.legend(loc='lower center', prop={'size': PP.lf} , bbox_to_anchor=(0.5, -0.4), ncol= 3 )  
     axes_2.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))
     axes_3.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))
-    axes_3.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))    
+    axes_4.legend(loc='upper right', prop={'size': PP.lf} , bbox_to_anchor=(1.2,1.5))    
 
     return ti, tf
  
@@ -410,55 +411,58 @@ def Hararmonic_Noise_Validation_Data(PP):
     fig_1.set_size_inches(PP.fig_size_width,PP.fig_size_height)
     fig_1.tight_layout()
     axes_1_1 = fig_1.add_subplot(2,3,1)     
-    axes_1_1.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_1_60deg                                      , color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw, label = 'ANOPP PAS')       
-    axes_1_1.plot(validation_data.harmonics, validation_data.Exp_Test_Case_1_60deg                                       , color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')    
+    axes_1_1.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_1_60deg, color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw, label = 'ANOPP PAS')       
+    axes_1_1.plot(validation_data.harmonics, validation_data.Exp_Test_Case_1_60deg, color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')    
     axes_1_1.set_ylabel('SPL (dB)') 
     axes_1_1.minorticks_on() 
      
     # Test Case 2
     axes_1_2 = fig_1.add_subplot(2,3,2)  
-    axes_1_2.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_2_60deg                                    , color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
-    axes_1_2.plot(validation_data.harmonics, validation_data.Exp_Test_Case_2_60deg                                     , color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'Exp.')  
+    axes_1_2.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_2_60deg, color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
+    axes_1_2.plot(validation_data.harmonics, validation_data.Exp_Test_Case_2_60deg, color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'Exp.')  
     axes_1_2.minorticks_on()   
 
     # Test Case 3
     axes_1_3 = fig_1.add_subplot(2,3,3)   
-    axes_1_3.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_3_60deg                                    , color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
-    axes_1_3.plot(validation_data.harmonics, validation_data.Exp_Test_Case_3_60deg                                     , color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')        
+    axes_1_3.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_3_60deg, color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
+    axes_1_3.plot(validation_data.harmonics, validation_data.Exp_Test_Case_3_60deg, color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')        
     axes_1_3.minorticks_on() 
  
     axes_1_4 = fig_1.add_subplot(2,3,4)       
-    axes_1_4.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_1_90deg                                    , color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
-    axes_1_4.plot(validation_data.harmonics, validation_data.Exp_Test_Case_1_90deg                                     , color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')       
+    axes_1_4.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_1_90deg, color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
+    axes_1_4.plot(validation_data.harmonics, validation_data.Exp_Test_Case_1_90deg, color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')       
     axes_1_4.set_ylabel('SPL (dB)')
     axes_1_4.set_xlabel('Harmonic #')   
     axes_1_4.minorticks_on() 
 
     axes_1_5 = fig_1.add_subplot(2,3,5)                  
-    axes_1_5.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_2_90deg                                     , color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw, label = 'ANOPP PAS')       
-    axes_1_5.plot(validation_data.harmonics, validation_data.Exp_Test_Case_2_90deg                                      , color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw, label = 'Exp.')   
+    axes_1_5.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_2_90deg, color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw, label = 'ANOPP PAS')       
+    axes_1_5.plot(validation_data.harmonics, validation_data.Exp_Test_Case_2_90deg, color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw, label = 'Exp.')   
     axes_1_5.set_xlabel('Harmonic #')  
     axes_1_5.minorticks_on() 
 
     axes_1_6 = fig_1.add_subplot(2,3,6)         
-    axes_1_6.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_3_90deg                                    , color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
-    axes_1_6.plot(validation_data.harmonics, validation_data.Exp_Test_Case_3_90deg                                     , color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')     
+    axes_1_6.plot(validation_data.harmonics, validation_data.ANOPP_PAS_Case_3_90deg, color = PP.Rlc[0] , linestyle = PP.Rls, marker = PP.Rlm[0]  , markersize = PP.m , linewidth = PP.lw,   label = 'ANOPP PAS')       
+    axes_1_6.plot(validation_data.harmonics, validation_data.Exp_Test_Case_3_90deg, color = PP.Elc[0] , linestyle = PP.Els, marker = PP.Elm[0]  , markersize = PP.m , linewidth = PP.lw,  label = 'Exp.')     
     axes_1_6.set_xlabel('Harmonic #')  
     axes_1_6.minorticks_on()
     
 
     # Polar plot of noise   
     fig_2 = plt.figure('Point Source')
+    fig_2.tight_layout()
     axes_2 = fig_2.add_subplot(111, projection='polar')         
     axes_2.set_yticks(np.arange(50,150,25))     
     axes_2.grid(True)
     
     fig_3 = plt.figure('Line Source')
+    fig_3.tight_layout()
     axes_3 = fig_3.add_subplot(111, projection='polar')         
     axes_3.set_yticks(np.arange(50,150,25))     
     axes_3.grid(True)
     
-    fig_4 = plt.figure('Line Source')
+    fig_4 = plt.figure('Plane Source')
+    fig_4.tight_layout()
     axes_4 = fig_4.add_subplot(111, projection='polar')         
     axes_4.set_yticks(np.arange(50,150,25))     
     axes_4.grid(True)
@@ -543,7 +547,7 @@ def plot_parameters():
  
     PP = Data(  
         fig_size_width  = 14 ,
-        fig_size_height = 9 ,       
+        fig_size_height = 10 ,       
         lw  = 1,                             # line_width               
         m   = 5,                             # markersize               
         lf  = 10,                            # legend_font_size         
