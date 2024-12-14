@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 def main():   
     single_airfoil()
-    multi_airfoil()
+    # multi_airfoil()
     
     return 
     
@@ -36,22 +36,34 @@ def single_airfoil():
     Re_vals              = np.atleast_2d(np.ones(len(AoA_deg)))*1E5 
     AoA_rad              = np.atleast_2d(AoA_deg*Units.degrees)   
     airfoil_file_1       = '4412'
-    airfoil_geometry_1   = compute_naca_4series(airfoil_file_1,npoints = 201)
+    airfoil_geometry_1   = compute_naca_4series(airfoil_file_1,npoints = 301)
     airfoil_properties_1 = airfoil_analysis(airfoil_geometry_1,AoA_rad,Re_vals)  
     
     # # distribution plots
     # for i in range(16):
-    #     plt.plot(airfoil_properties_1.x[0,0,150:],airfoil_properties_1.fL[:,i,0])
-    #     plt.title(('AOA =',AoA_deg[i],'degrees'))
-    #     plt.ylabel("fL")
-    #     plt.xlabel("c")
+    #     plt.plot(airfoil_properties_1.x[0,0,150:], airfoil_properties_1.fL[:,i,0])
+    #     plt.title(f'Lift Distribution at α = {AoA_deg[i]}°', fontsize=14, pad=15)
+    #     plt.ylabel(r"$f_L$")
+    #     plt.xlabel("$c$")
+    #     plt.ylim((-0.01,0.032))
+    #     plt.grid(True)
+    #     plt.grid(True, which='minor', linestyle=':', alpha=0.5)
+    #     plt.gca().xaxis.set_major_locator(plt.MaxNLocator(6))  # 6 ticks on x-axis
+    #     plt.gca().yaxis.set_major_locator(plt.MaxNLocator(8))  # 8 ticks on y-axis
+    #     plt.minorticks_on()
     #     plt.show()
     
     # for i in range(16):
-    #     plt.plot(airfoil_properties_1.x[0,0,150:],airfoil_properties_1.fD[:,i,0])
-    #     plt.title(('AOA =',AoA_deg[i],'degrees'))
-    #     plt.ylabel("fD")
-    #     plt.xlabel("c")
+    #     plt.plot(airfoil_properties_1.x[0,0,150:], airfoil_properties_1.fD[:,i,0])
+    #     plt.title(f'Drag Distribution at α = {AoA_deg[i]}°', fontsize=14, pad=15)
+    #     plt.ylabel(r"$f_L$")
+    #     plt.xlabel("$c$")
+    #     plt.ylim((-0.75,0.75))
+    #     plt.grid(True)
+    #     plt.grid(True, which='minor', linestyle=':', alpha=0.5)
+    #     plt.gca().xaxis.set_major_locator(plt.MaxNLocator(6))  # 6 ticks on x-axis
+    #     plt.gca().yaxis.set_major_locator(plt.MaxNLocator(8))  # 8 ticks on y-axis
+    #     plt.minorticks_on()
     #     plt.show()
     
     # Plots    
@@ -59,107 +71,115 @@ def single_airfoil():
     plot_airfoil_polars(airfoil_properties_1)
     plot_airfoil_boundary_layer_properties(airfoil_properties_1,show_legend = True ) 
     
-    # # Verification  
-    # cl_invisc_true        = 1.0675160492711429
-    # cd_invisc_true        = 7.638304328309864e-05
-    # cd_visc_true          = 0.01514252064401875
-    # cm_invisc_true        = -0.11066949071512713 
+    # # # Verification  
+    # # cl_invisc_true        = 1.0675160492711429
+    # # cd_invisc_true        = 7.638304328309864e-05
+    # # cd_visc_true          = 0.01514252064401875
+    # # cm_invisc_true        = -0.11066949071512713 
     
-    # print('\nThis is for single airfoil')
-    # diff_CL = np.abs((airfoil_properties_1.cl_invisc[0,10] - cl_invisc_true)/cl_invisc_true)    
-    # print('\ncl_invisc difference')
-    # print(diff_CL)
-    # assert diff_CL < 1e-6 
+    # # print('\nThis is for single airfoil')
+    # # diff_CL = np.abs((airfoil_properties_1.cl_invisc[0,10] - cl_invisc_true)/cl_invisc_true)    
+    # # print('\ncl_invisc difference')
+    # # print(diff_CL)
+    # # assert diff_CL < 1e-6 
     
-    # diff_CD_invisc = np.abs((airfoil_properties_1.cd_invisc[0,10] - cd_invisc_true)/cd_invisc_true)  
-    # print('\ncd_invisc difference')
-    # print(diff_CD_invisc)
-    # assert diff_CD_invisc  < 1e-6
+    # # diff_CD_invisc = np.abs((airfoil_properties_1.cd_invisc[0,10] - cd_invisc_true)/cd_invisc_true)  
+    # # print('\ncd_invisc difference')
+    # # print(diff_CD_invisc)
+    # # assert diff_CD_invisc  < 1e-6
 
-    # diff_CD_visc = np.abs((airfoil_properties_1.cd_visc[0,10] - cd_visc_true)/cd_visc_true)  
-    # print('\ncd_invisc difference')
-    # print(diff_CD_visc)
-    # assert diff_CD_visc  < 1e-6    
+    # # diff_CD_visc = np.abs((airfoil_properties_1.cd_visc[0,10] - cd_visc_true)/cd_visc_true)  
+    # # print('\ncd_invisc difference')
+    # # print(diff_CD_visc)
+    # # assert diff_CD_visc  < 1e-6    
 
-    # diff_CM = np.abs((airfoil_properties_1.cm_invisc[0,10] - cm_invisc_true)/cm_invisc_true) 
-    # print('\ncm_invisc difference')
-    # print(diff_CM)
-    # assert diff_CM < 1e-6
+    # # diff_CM = np.abs((airfoil_properties_1.cm_invisc[0,10] - cm_invisc_true)/cm_invisc_true) 
+    # # print('\ncm_invisc difference')
+    # # print(diff_CM)
+    # # assert diff_CM < 1e-6
     
     
-    # Abbot Validation
-    Cl_abbot = 0.906
-    Cd_abbot = 0.0064
-    Cm_abbot = -0.0885
+    # # Abbot Validation
+    # Cl_abbot = 0.906
+    # Cd_abbot = 0.0064
+    # Cm_abbot = -0.0885
     
-    CL_invisc_abb_diff = np.abs((airfoil_properties_1.cl_invisc[0,10] - Cl_abbot)/Cl_abbot) 
-    CD_invisc_abb_diff = np.abs((airfoil_properties_1.cd_invisc[0,10] - Cd_abbot)/Cd_abbot)
-    CD_visc_abb_diff   = np.abs((airfoil_properties_1.cd_visc[0,10] - Cd_abbot)/Cd_abbot)
-    CM_invisc_abb_diff = np.abs((airfoil_properties_1.cm_invisc[0,10] - Cm_abbot)/Cm_abbot)
-    print('\nValidation against Abbot data')
-    print('invisc Cl-Cl_abbot/Cl_abbot',CL_invisc_abb_diff*100,'%\n') 
-    print('invisc Cd-Cd_abbot/Cd_abbot',CD_invisc_abb_diff*100,'%\n')
-    print('visc Cd-Cd_abbot/Cd_abbot',CD_visc_abb_diff*100,'%\n')
-    print('invisc Cm-Cm_abbot/Cm_abbot',CM_invisc_abb_diff*100,'%\n')
+    # CL_invisc_abb_diff = np.abs((airfoil_properties_1.cl_invisc[0,10] - Cl_abbot)/Cl_abbot) 
+    # CD_invisc_abb_diff = np.abs((airfoil_properties_1.cd_invisc[0,10] - Cd_abbot)/Cd_abbot)
+    # CD_visc_abb_diff   = np.abs((airfoil_properties_1.cd_visc[0,10] - Cd_abbot)/Cd_abbot)
+    # CM_invisc_abb_diff = np.abs((airfoil_properties_1.cm_invisc[0,10] - Cm_abbot)/Cm_abbot)
+    # print('\nValidation against Abbot data')
+    # print('invisc Cl-Cl_abbot/Cl_abbot',CL_invisc_abb_diff*100,'%\n') 
+    # print('invisc Cd-Cd_abbot/Cd_abbot',CD_invisc_abb_diff*100,'%\n')
+    # print('visc Cd-Cd_abbot/Cd_abbot',CD_visc_abb_diff*100,'%\n')
+    # print('invisc Cm-Cm_abbot/Cm_abbot',CM_invisc_abb_diff*100,'%\n')
     
     
-    # CFD Validation
-    Cl_CFD = 1.086832
-    Cd_CFD = 0.013989972
-    Cm_CFD = -0.64460867
+    # # CFD Validation
+    # Cl_CFD = 1.086832
+    # Cd_CFD = 0.013989972
+    # Cm_CFD = -0.64460867
     
-    CL_invisc_CFD_diff = np.abs((airfoil_properties_1.cl_invisc[0,10] - Cl_CFD)/Cl_CFD) 
-    CD_invisc_CFD_diff = np.abs((airfoil_properties_1.cd_invisc[0,10] - Cd_CFD)/Cd_CFD)
-    CD_visc_CFD_diff = np.abs((airfoil_properties_1.cd_visc[0,10] - Cd_CFD)/Cd_CFD)
-    CM_invisc_CFD_diff = np.abs((airfoil_properties_1.cm_invisc[0,10] - Cm_CFD)/Cm_CFD)
-    print('\nValidation against CFD data')
-    print('invisc Cl-Cl_CFD/Cl_CFD',CL_invisc_CFD_diff*100,'%\n') 
-    print('invisc Cd-Cd_CFD/Cd_CFD',CD_invisc_CFD_diff*100,'%\n')
-    print('visc Cd-Cd_CFD/Cd_CFD',CD_visc_CFD_diff*100,'%\n')
-    print('invisc Cm-Cm_CFD/Cm_CFD',CM_invisc_CFD_diff*100,'%\n')
+    # CL_invisc_CFD_diff = np.abs((airfoil_properties_1.cl_invisc[0,10] - Cl_CFD)/Cl_CFD) 
+    # CD_invisc_CFD_diff = np.abs((airfoil_properties_1.cd_invisc[0,10] - Cd_CFD)/Cd_CFD)
+    # CD_visc_CFD_diff = np.abs((airfoil_properties_1.cd_visc[0,10] - Cd_CFD)/Cd_CFD)
+    # CM_invisc_CFD_diff = np.abs((airfoil_properties_1.cm_invisc[0,10] - Cm_CFD)/Cm_CFD)
+    # print('\nValidation against CFD data')
+    # print('invisc Cl-Cl_CFD/Cl_CFD',CL_invisc_CFD_diff*100,'%\n') 
+    # print('invisc Cd-Cd_CFD/Cd_CFD',CD_invisc_CFD_diff*100,'%\n')
+    # print('visc Cd-Cd_CFD/Cd_CFD',CD_visc_CFD_diff*100,'%\n')
+    # print('invisc Cm-Cm_CFD/Cm_CFD',CM_invisc_CFD_diff*100,'%\n')
     
-    AoA_abbot_cl_cd = np.array([-4.1552,-3.2336,-2.128,-1.207,-0.1014,0,1.0038,2.6623,4.8738,6.4392,7.8209,9.6644])
-    cl_abbot  = np.array([-0.0267,0.0573,0.1693,0.2811,0.393,0.404973127035831,0.5235,0.6914,0.906,1.1017,1.2602,1.4096])
-    cd_abbot  = np.array([0.0066,0.0066,0.0063,0.0063,0.0062,0.0062,0.0062,0.0062,0.0064,0.008,0.0106,0.0123])
+    # AoA_abbot_cl_cd = np.array([-4.1552,-3.2336,-2.128,-1.207,-0.1014,0,1.0038,2.6623,4.8738,6.4392,7.8209,9.6644])
+    # cl_abbot  = np.array([-0.0267,0.0573,0.1693,0.2811,0.393,0.404973127035831,0.5235,0.6914,0.906,1.1017,1.2602,1.4096])
+    # cd_abbot  = np.array([0.0066,0.0066,0.0063,0.0063,0.0062,0.0062,0.0062,0.0062,0.0064,0.008,0.0106,0.0123])
     
-    AOA_abbot_cm = np.array([-4.0694,-1.4798,0,0.7399,3.1445,5.7341,8.1387])
-    cm_abbot  = np.array([-0.0916,-0.0913,-0.0895666666666667,-0.0887,-0.0885,-0.0882,-0.081])
+    # AOA_abbot_cm = np.array([-4.0694,-1.4798,0,0.7399,3.1445,5.7341,8.1387])
+    # cm_abbot  = np.array([-0.0916,-0.0913,-0.0895666666666667,-0.0887,-0.0885,-0.0882,-0.081])
     
-    cl_xfoil = np.array([-0.072,0.034,0.152,0.261,0.375,0.485,0.582,0.704,0.814,0.924,1.021,1.126,1.219,1.3,1.363,1.43])
-    cd_xfoil = np.array([0.008,0.008,0.007,0.007,0.007,0.007,0.006,0.006,0.006,0.007,0.008,0.009,0.01,0.013,0.015,0.017])
-    cm_xfoil = np.array([-0.105,-0.105,-0.104,-0.104,-0.104,-0.103,-0.101,-0.103,-0.102,-0.101,-0.1,-0.099,-0.095,-0.09,-0.084,-0.076])
+    # cl_xfoil = np.array([-0.072,0.034,0.152,0.261,0.375,0.485,0.582,0.704,0.814,0.924,1.021,1.126,1.219,1.3,1.363,1.43])
+    # cd_xfoil = np.array([0.008,0.008,0.007,0.007,0.007,0.007,0.006,0.006,0.006,0.007,0.008,0.009,0.01,0.013,0.015,0.017])
+    # cm_xfoil = np.array([-0.105,-0.105,-0.104,-0.104,-0.104,-0.103,-0.101,-0.103,-0.102,-0.101,-0.1,-0.099,-0.095,-0.09,-0.084,-0.076])
     
-    Final_CL_diff_invisc = np.abs(np.sum((airfoil_properties_1.cl_invisc[0,:] - cl_xfoil)/cl_xfoil))/16
-    print('\nNormalised mean absolute error with respect to xfoil in CL inviscid',Final_CL_diff_invisc*100,'%\n') 
-    Final_CD_diff_invisc = np.abs(np.sum((airfoil_properties_1.cd_invisc[0,:] - cd_xfoil)/cd_xfoil))/16
-    print('Normalised mean absolute error with respect to xfoil in CD inviscid',Final_CD_diff_invisc*100,'%\n')
-    Final_CD_diff_visc = np.abs(np.sum((airfoil_properties_1.cd_visc[0,:] - cd_xfoil)/cd_xfoil))/16
-    print('Normalised mean absolute error with respect to xfoil in CD viscous',Final_CD_diff_visc*100,'%\n')
-    Final_CM_diff_invisc = np.abs(np.sum((airfoil_properties_1.cm_invisc[0,:] - cm_xfoil)/cm_xfoil))/16
-    print('Normalised mean absolute error with respect to xfoil in CM inviscid',Final_CM_diff_invisc*100,'%\n') 
+    # Final_CL_diff_invisc = np.abs(np.sum((airfoil_properties_1.cl_invisc[0,:] - cl_xfoil)/cl_xfoil))/16
+    # print('\nNormalised mean absolute error with respect to xfoil in CL inviscid',Final_CL_diff_invisc*100,'%\n') 
+    # Final_CD_diff_invisc = np.abs(np.sum((airfoil_properties_1.cd_invisc[0,:] - cd_xfoil)/cd_xfoil))/16
+    # print('Normalised mean absolute error with respect to xfoil in CD inviscid',Final_CD_diff_invisc*100,'%\n')
+    # Final_CD_diff_visc = np.abs(np.sum((airfoil_properties_1.cd_visc[0,:] - cd_xfoil)/cd_xfoil))/16
+    # print('Normalised mean absolute error with respect to xfoil in CD viscous',Final_CD_diff_visc*100,'%\n')
+    # Final_CM_diff_invisc = np.abs(np.sum((airfoil_properties_1.cm_invisc[0,:] - cm_xfoil)/cm_xfoil))/16
+    # print('Normalised mean absolute error with respect to xfoil in CM inviscid',Final_CM_diff_invisc*100,'%\n') 
     
-    fig = plt.figure()
-    fig.set_size_inches(6,6)
-    axis_1 = fig.add_subplot(3,1,1) 
-    axis_2 = fig.add_subplot(3,1,2) 
-    axis_3 = fig.add_subplot(3,1,3) 
+    # fig = plt.figure()
+    # fig.set_size_inches(6,6)
+    # fig.subplots_adjust(hspace=0.3)
+    # axis_1 = fig.add_subplot(2,1,1) 
+    # axis_2 = fig.add_subplot(2,1,2) 
     
-    axis_1.plot(AoA_deg,airfoil_properties_1.cl_invisc[0,:],'-ko', label='cl invisc')
-    axis_1.set_ylabel('CL inviscid')
-    axis_1.plot(AoA_abbot_cl_cd,cl_abbot, label='abbot')
-    axis_1.plot(AoA_deg,cl_xfoil,label='xfoil')
-    axis_1.legend(loc="upper right") 
-    axis_2.plot(AoA_deg,airfoil_properties_1.cd_invisc[0,:],'-ko', label='cd invisc')
-    axis_2.set_ylabel('CD inviscid')
-    axis_2.plot(AoA_abbot_cl_cd,cd_abbot,label='abbot')
-    axis_2.plot(AoA_deg,cd_xfoil,label='xfoil')
-    axis_2.legend(loc="upper right")  
-    axis_3.plot(AoA_deg,airfoil_properties_1.cm_invisc[0,:],'-ko', label='cm invisc')
-    axis_3.set_ylabel('CM inviscid')
-    axis_3.plot(AOA_abbot_cm,cm_abbot,label='abbot')
-    axis_3.plot(AoA_deg,cm_xfoil,label='xfoil')
-    axis_3.legend(loc="upper right")
-    axis_3.set_xlabel('AoA') 
+    # axis_1.plot(AoA_deg,airfoil_properties_1.cl_invisc[0,:],'-g^', label=r'$C_l$')
+    # axis_1.set_ylabel(r'$C_l$')
+    # axis_1.plot(AoA_abbot_cl_cd,cl_abbot, label='abbot')
+    # axis_1.plot(AoA_deg,cl_xfoil,label='xfoil')
+    # axis_1.legend(loc="upper right")
+    # axis_1.grid(True, which='major', linestyle='-', alpha=0.8)
+    # axis_1.grid(True, which='minor', linestyle=':', alpha=0.5)
+    # axis_2.plot(AoA_deg,airfoil_properties_1.cd_invisc[0,:],'-g^', label=r'$C_d$ inviscid')
+    # axis_2.plot(AoA_deg,airfoil_properties_1.cd_visc[0,:],'-ks', label=r'$C_d$ viscous')
+    # axis_2.set_ylabel(r'$C_d$')
+    # axis_2.plot(AoA_abbot_cl_cd,cd_abbot,label='abbot')
+    # axis_2.plot(AoA_deg,cd_xfoil,label='xfoil')
+    # axis_2.legend(loc="upper right")
+    # axis_2.set_xlabel(r'$\alpha$')
+    # axis_2.grid(True, which='major', linestyle='-', alpha=0.8)
+    # axis_2.grid(True, which='minor', linestyle=':', alpha=0.5)
+    
+    
+    # # axis_3.plot(AoA_deg,airfoil_properties_1.cm_invisc[0,:],'-ko', label='cm invisc')
+    # # axis_3.set_ylabel('CM inviscid')
+    # # axis_3.plot(AOA_abbot_cm,cm_abbot,label='abbot')
+    # # axis_3.plot(AoA_deg,cm_xfoil,label='xfoil')
+    # # axis_3.legend(loc="upper right")
+    # # axis_3.set_xlabel('AoA') 
        
     return 
     

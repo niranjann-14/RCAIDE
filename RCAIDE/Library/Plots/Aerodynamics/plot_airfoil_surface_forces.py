@@ -40,7 +40,7 @@ def plot_airfoil_surface_forces(ap, save_figure = False , arrow_color = 'red',sa
 
     for i in range(n_cpts):     
         for j in range(nAoA): 
-            label =  '_AoA_' + str(round(ap.AoA[i][j]/Units.degrees,2)) + '_deg_Re_' + str(round(ap.Re[i][j]/1000000,2)) + 'E6'
+            label =  '_AoA_' + str(round(ap.AoA[i][j]/Units.degrees,2)) + '_deg_and_Re_=_' + str(round(ap.Re[i][j]/1000000,2)) + 'E6'
             fig   = plt.figure('Airfoil_Pressure_Normals' + label )
             axis = fig.add_subplot(1,1,1) 
             axis.plot(ap.x[0,0,:], ap.y[0,0,:],'k-')   

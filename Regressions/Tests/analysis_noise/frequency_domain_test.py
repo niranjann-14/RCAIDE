@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import time   
 import os 
 
-sys.path.append(os.path.join( os.path.split(os.path.split(sys.path[0])[0])[0], 'Vehicles' + os.path.sep + 'Rotors'))
+sys.path.append('../../Vehicles/Rotors')
 # the analysis functions
 
 from F8745_D4_Propeller  import F8745_D4_Propeller
@@ -180,30 +180,30 @@ def Harmonic_Noise_Validation(PP):
         
         if fid == 0:
             # Polar plot of noise    
-            axes_2.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
-            axes_2.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
-            axes_2.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-            axes_2.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
-            axes_2.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-            axes_2.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
+            axes_2.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Rlc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
+            axes_2.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Rlc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
+            axes_2.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Elc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_2.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Elc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
+            axes_2.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_2.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
         
         elif fid ==1:
             # Polar plot of noise    
-            axes_3.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
-            axes_3.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
-            axes_3.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-            axes_3.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
-            axes_3.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-            axes_3.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )
+            axes_3.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Rlc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
+            axes_3.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Rlc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
+            axes_3.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Elc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_3.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Elc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
+            axes_3.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_3.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )
         
         elif fid == 2:
             # Polar plot of noise    
-            axes_4.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
-            axes_4.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Slc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
-            axes_4.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-            axes_4.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
-            axes_4.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
-            axes_4.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[2] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
+            axes_4.plot(theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Rlc[0] , linestyle =PP.Sls, marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw, label = 'Total'  )  
+            axes_4.plot(-theta*Units.degrees,F8745D4_SPL[0,:] , color = PP.Rlc[0] , linestyle =PP.Sls , marker = PP.Slm[0] , markersize = PP.m*2 , linewidth = PP.lw  )  
+            axes_4.plot(theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Elc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_4.plot(-theta*Units.degrees,F8745D4_SPL_harmonic[0,:] , color = PP.Elc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Harmonic'  )  
+            axes_4.plot(theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw   )  
+            axes_4.plot(-theta*Units.degrees,F8745D4_SPL_broadband[0,:] , color = PP.Slc[1] , linestyle = PP.Sls, marker = PP.Slm[0] , markersize = PP.m , linewidth = PP.lw, label = 'Broadband' )  
         else:
             pass
         
@@ -450,19 +450,16 @@ def Hararmonic_Noise_Validation_Data(PP):
 
     # Polar plot of noise   
     fig_2 = plt.figure('Point Source')
-    fig_2.tight_layout()
     axes_2 = fig_2.add_subplot(111, projection='polar')         
     axes_2.set_yticks(np.arange(50,150,25))     
     axes_2.grid(True)
     
     fig_3 = plt.figure('Line Source')
-    fig_3.tight_layout()
     axes_3 = fig_3.add_subplot(111, projection='polar')         
     axes_3.set_yticks(np.arange(50,150,25))     
     axes_3.grid(True)
     
     fig_4 = plt.figure('Plane Source')
-    fig_4.tight_layout()
     axes_4 = fig_4.add_subplot(111, projection='polar')         
     axes_4.set_yticks(np.arange(50,150,25))     
     axes_4.grid(True)
@@ -473,10 +470,10 @@ def Hararmonic_Noise_Validation_Data(PP):
 
 def Broadband_Noise_Validation_Data(PP):  
     validation_data = Data()      
-    validation_data.Exp_APC_SF_freqency_spectrum =  np.array([100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 
+    validation_data.Exp_APC_SF_freqency_spectrum = np.array([100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 
                                               2000, 2500, 3150,4000, 5000, 6300, 8000, 10000])   
 
-    validation_data.Exp_APC_SF_1_3_Spectrum      = np.array([[22.149, 42.242, 24.252, 22.616, 26.121, 24.953, 28.925, 29.158, 39.205
+    validation_data.Exp_APC_SF_1_3_Spectrum = np.array([[22.149, 42.242, 24.252, 22.616, 26.121, 24.953, 28.925, 29.158, 39.205
                                               , 42.943, 39.205, 38.971, 47.149, 45.280, 40.373, 38.738, 38.037, 39.906
                                               , 41.308, 45.981, 42.710, 39.205, 41.775, 37.570, 34.065, 33.598 ],
                                              [17.943,46.214,46.214,22.850,27.056,27.990,31.495,31.261,37.336,
